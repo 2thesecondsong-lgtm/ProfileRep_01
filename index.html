@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ ИМЕНА ЖЕНИХА И НЕВЕСТЫ }} — Приглашение на свадьбу</title>
+    
+    <!-- Подключаем шрифты Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* === ПЕРЕМЕННЫЕ (ЦВЕТА) === */
+        :root {
+            --bg-color: #F9F9F4; /* Слоновая кость / Очень светлый беж */
+            --text-color: #2C2C2C; /* Темно-серый (не черный) */
+            --accent-color: #768068; /* Оливковый приглушенный */
+            --accent-light: #B8C2B0; /* Светлый оливковый для фона элементов */
+            --white: #FFFFFF;
+        }
+
+        /* === БАЗОВЫЕ СТИЛИ === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* === АНИМАЦИИ ПРИ СКРОЛЛЕ (JS добавляет класс .visible) === */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            will-change: opacity, visibility;
+        }
+
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* === 1. ГЛАВНЫЙ ЭКРАН (HERO) === */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 20px;
+            /* Главное фото */
+            background-image: url('hero2.jpg'); 
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Затемнение фона для читаемости текста */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.3); 
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: var(--white);
+            animation: fadeIn Hero 1.5s ease-out;
+        }
+
+        .hero-date {
+            font-size: 1.2rem;
+            letter-spacing: 0.2em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .hero-names {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .hero-location {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .hero-invite {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-style: italic;
+            margin-top: 20px;
+            letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 768px) {
+            .hero-names { font-size: 2.8rem; }
+            .hero-invite { font-size: 1.2rem; }
+        }
+
+        /* === 2. ПРИГЛАШЕНИЕ И ТЕКСТ === */
+        .intro {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .intro p {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 40px;
+        }
+
+        /* === 3. КОЛЛАЖ (ДЕТСТВО) === */
+        /* Эффект вырезанных фото с органическими краями */
+        .collage-section {
+            padding: 60px 0 100px;
+            background-color: var(--white);
+            overflow: hidden;
+        }
+
+        .collage-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .collage-item {
+            position: relative;
+            width: 300px;
+            height: 350px;
+            transition: transform 0.4s ease;
+            cursor: pointer;
+        }
+
+        /* Стилизация под "вырезанное" фото или скетч */
+        .collage-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Border-radius создает форму "кляксы" или неровного круга */
+            border-radius: 45% 55% 40% 60% / 55% 40% 60% 45%; 
+            border: 2px solid var(--accent-light);
+            box-shadow: 10px 10px 30px rgba(118, 128, 104, 0.15);
+            transition: all 0.5s ease;
+        }
+
+        /* Эффект при наведении */
+        .collage-item:hover .collage-img {
+            border-radius: 20px; /* Фото становится более прямоугольным */
+            transform: scale(1.05) rotate(-2deg);
+            border-color: var(--accent-color);
+        }
+
+        .collage-caption {
+            text-align: center;
+            margin-top: 15px;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        /* === 4. ПРОГРАММА ДНЯ (TIMELINE) === */
+        .timeline-section {
+            padding: 100px 0;
+            background-color: var(--bg-color);
+            text-align: center;
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 50px;
+            margin-top: 50px;
+        }
+
+        .timeline-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 200px;
+            transition: transform 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .time {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--accent-light);
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+        }
+
+        /* === 5. ЛОКАЦИЯ И КАРТА === */
+        .location-section {
+            padding: 80px 0;
+            background-color: var(--white);
+            text-align: center;
+        }
+
+        .map-wrapper {
+            max-width: 1000px;
+            margin: 40px auto 0;
+            height: 450px;
+            background-color: #eee;
+            border-radius: 2px;
+            overflow: hidden;
+            /* Черно-белый фильтр для карты, чтобы не выбивалась из стиля */
+            filter: grayscale(100%) contrast(1.1); 
+            transition: filter 0.5s ease;
+        }
+
+        .map-wrapper:hover {
+            filter: grayscale(0%); /* При наведении карта становится цветной */
+        }
+
+        .location-details {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        /* === 6. ФОРМА (RSVP) === */
+        .rsvp-section {
+            padding: 100px 0;
+            text-align: center;
+            background-color: var(--accent-color);
+            color: var(--white);
+        }
+
+        .rsvp-section .section-title {
+            color: var(--white);
+        }
+
+        .rsvp-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        input, select, textarea {
+            padding: 15px;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        button {
+            padding: 18px;
+            background-color: var(--text-color);
+            color: var(--white);
+            border: none;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: var(--white);
+            color: var(--accent-color);
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* === FOOTER === */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 1. ГЛАВНЫЙ ЭКРАН -->
+    <header class="hero">
+        <div class="hero-content">
+            <span class="hero-date">24.07.2026</span>
+            <h1 class="hero-names">Владислав & Екатерина</h1>
+            <p class="hero-invite">Приглашаем вас на наше скромное торжество!</p>
+        </div>
+    </header>
+
+    <!-- 2. ИНТРО -->
+    <section class="intro container fade-in-section">
+        <h2 class="section-title">Дорогие гости!</h2>
+        <p>
+            Мы нашли друг друга в этом большом мире и решили создать семью! Этот день станет для нас особенным, и мы хотим разделить его с самыми дорогими людьми — с вами. Приглашаем вас на нашу свадьбу, чтобы вместе отметить начало нашей совместной истории!
+        </p>
+    </section>
+
+    <!-- 3. КОЛЛАЖ (ДЕТСТВО / LOVE STORY) -->
+    <!-- Здесь оставлено место под фото с эффектом "вырезанных" картинок -->
+    <section class="collage-section fade-in-section">
+        <div class="container">
+            <h2 class="section-title" style="text-align: center;">Как все начиналось</h2>
+            
+            <div class="collage-container">
+                <!-- ФОТО 1 -->
+                <div class="collage-item">
+                    <!-- Фото жениха в детстве -->
+                    <img src="vlad_baby.jpg" alt="Жених в детстве" class="collage-img" style="border-radius: 45% 55% 40% 60% / 55% 40% 60% 45%;">
+                    <div class="collage-caption">Владислав</div>
+                </div>
+
+                <!-- ФОТО 2 -->
+                <div class="collage-item">
+                    <!-- Фото невесты в детстве -->
+                    <img src="kate_baby.jpg" alt="Невеста в детстве" class="collage-img" style="border-radius: 55% 45% 60% 40% / 40% 60% 45% 55%;">
+                    <div class="collage-caption">Екатерина</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. ПРОГРАММА ДНЯ -->
+    <section class="timeline-section fade-in-section">
+        <div class="container">
+            <h2 class="section-title">Программа дня</h2>
+            <div class="timeline">
+                
+                <div class="timeline-item">
+                    <span class="time">{{ 15:00 }}</span>
+                    <span class="event">Сбор гостей</span>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="time">{{ 16:00 }}</span>
+                    <span class="event">Церемония</span>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="time">{{ 17:30 }}</span>
+                    <span class="event">Праздничный ужин</span>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="time">{{ 22:00 }}</span>
+                    <span class="event">Торт и танцы</span>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. ЛОКАЦИЯ -->
+    <section class="location-section fade-in-section">
+        <div class="container">
+            <h2 class="section-title">Место проведения</h2>
+            <p class="location-details">
+                <strong>Эко-усадьба Белово</strong><br>
+                Ленинградская область, Тосненский район, Любанское городское поселение
+            </p>
+
+            <!-- БЛОК ДЛЯ ЯНДЕКС КАРТЫ -->
+            <div class="map-wrapper">
+                <!-- 
+                     ИНСТРУКЦИЯ ДЛЯ ВСТАВКИ КАРТЫ:
+                     1. Зайдите на https://yandex.ru/map-constructor/
+                     2. Создайте карту, поставьте точку.
+                     3. Нажмите "Получить код" -> iframe.
+                     4. Удалите width и height из кода Яндекса и вставьте iframe ниже.
+                     5. Обязательно добавьте style="width: 100%; height: 100%; border: none;" внутрь тега iframe.
+                -->
+                
+                <!-- Яндекс карта Эко-усадьба Белово -->
+                <iframe src="https://yandex.ru/map-widget/v1/?ll=30.390000%2C59.150000&z=12&pt=30.390000%2C59.150000%2Cpm2rdm" width="100%" height="100%" frameborder="0"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. RSVP (ФОРМА) -->
+    <section class="rsvp-section fade-in-section">
+        <div class="container">
+            <h2 class="section-title">Подтвердите присутствие</h2>
+            <p style="margin-bottom: 30px;">Пожалуйста, заполните форму до 1 июня</p>
+            
+            <form class="rsvp-form" action="#" method="POST">
+                <!-- AI-агент может настроить отправку данных в Google Sheets или Telegram -->
+                <input type="text" placeholder="Ваши Имя и Фамилия" required>
+                
+                <select required>
+                    <option value="" disabled selected>Сможете прийти?</option>
+                    <option value="yes">С удовольствием приду</option>
+                    <option value="no">К сожалению, не смогу</option>
+                </select>
+
+                <input type="text" placeholder="Предпочтения по напиткам / Аллергия">
+                
+                <button type="submit">Отправить ответ</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>© 2026 Владислав & Екатерина</p>
+        </div>
+    </footer>
+
+    <!-- СКРИПТ АНИМАЦИИ -->
+    <script>
+        // Простой скрипт, который отслеживает прокрутку и добавляет класс .visible элементам
+        document.addEventListener("DOMContentLoaded", function() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target); // Анимация проигрывается 1 раз
+                    }
+                });
+            }, observerOptions);
+
+            const sections = document.querySelectorAll('.fade-in-section');
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
